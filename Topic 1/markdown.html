@@ -1,0 +1,58 @@
+<pre><code class="language-avatar">&quot;0&quot;:
+  - Cap.png
+image: https:/labs.hackthebox.com/storage/avatars/70ea3357a2d090af11a0953ec8717e90.png
+description: &quot; Cap is an easy difficulty Linux machine running an HTTP server that performs administrative functions including performing network captures. Improper controls result in Insecure Direct Object Reference (IDOR) giving access to another user&#39;s capture. The capture contains plaintext credentials and can be used to gain foothold. A Linux capability is then leveraged to escalate to root. &quot;
+</code></pre>
+<h1 id="enumeration"><strong>Enumeration</strong></h1>
+<hr>
+<h2 id="nmap">Nmap</h2>
+<hr>
+<pre><code class="language-nmap">
+PORT   STATE SERVICE VERSION
+21/tcp open  ftp     vsftpd 3.0.3
+80/tcp open  http    gunicorn
+</code></pre>
+<p>![[Pasted image 20241209004509.png]]</p>
+<p>Running an nmap scan we find 3 open ports</p>
+<h2 id="web">WEB</h2>
+<hr>
+<p>Accessing the web we find a dashboard
+![[Pasted image 20241209004730.png]]</p>
+<p>We discover changing the number after data gives us access to other users data</p>
+<p>![[Pasted image 20241209004959.png]]</p>
+<p>We download user 0&#39;s pcap file 
+![[Pasted image 20241209005255.png]]</p>
+<h2 id="wireshark">Wireshark</h2>
+<hr>
+<p>Downloading and analyzing a pcap file we dowloaded from user 0 we find user credentials 
+![[Pasted image 20241209005855.png]]</p>
+<pre><code>name: nathan
+password: Buck3tH4TF0RM3!
+</code></pre>
+<h2 id="ftp">FTP</h2>
+<hr>
+<p>Using the credentials we find we are able to gain access to FTP 
+![[Pasted image 20241209004325.png]]</p>
+<p>After accessing Ftp we find user.txt our first flag</p>
+<h1 id="initial-access"><strong>Initial Access</strong></h1>
+<hr>
+<h2 id="ssh">SSH</h2>
+<hr>
+<p>Using the credentialls we found we are able to access SSH 
+![[Pasted image 20241209010327.png]]</p>
+<h1 id="reconnaissance"><strong>Reconnaissance</strong></h1>
+<hr>
+<h2 id="linpeas">Linpeas</h2>
+<hr>
+<p>Linpeas reveals how to get root access through pythin3.8
+![[Pasted image 20241209012010.png]]</p>
+<h2 id="gtfobins">GtfoBins</h2>
+<hr>
+<p>Going to <a href="https://gtfobins.github.io/gtfobins/python/#capabilities">https://gtfobins.github.io/gtfobins/python/#capabilities</a> we find how best to abuse this<br>![[Pasted image 20241209012741.png]]</p>
+<h1 id="privilege-escalation"><strong>Privilege Escalation</strong></h1>
+<hr>
+<p>Running the binary we achieve root access
+![[Pasted image 20241209012926.png]]
+We navigate to /root and we find the root.txt
+![[Pasted image 20241209013100.png]]</p>
+<center>END!!!!!!!!!!!</centre>
